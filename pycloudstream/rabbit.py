@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 """Send message to RabbitMQ."""
 from functools import partial
 import pika
