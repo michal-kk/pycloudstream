@@ -22,17 +22,23 @@ import javaproperties
 import os
 
 
-def configure_exchange(properties_file_path):
+def configure_exchange(properties_file_path, project_path=False):
     """Read properties file, return send message function.
 
     Args:
         properties_file (str): Path of the ``application.properties`` file
             containing spring cloud stream configuration.
+        project_path (bool): If True, treat the directory as a spring boot
+            project root directory. Defaults to False.
 
     Returns:
         Partial that takes a message body as an argument and sends the given
             message body to the exchange configured via the read parameters.
     """
+    if project_path:
+        properties_file_path = os.path.join(properties_file_path,
+                                            "src/main/resources")
+
     with open(os.path.join(properties_file_path, "application.properties"),
               "rb") as f:
         properties_dict = javaproperties.load(f)
