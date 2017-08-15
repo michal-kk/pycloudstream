@@ -5,10 +5,16 @@ spring cloud stream properties in the file and sends a message to the
 configured exchange.
 
 Example:
-    ...
+    Confingure exchange via java properties file:
+
+        >>> import pycloudstream.rabbit
+        >>> configured_send = pycloudstream.rabbit.configure_exchange(path)
+        >>> configured_send("hello, world!")
+
 
 Todo:
     * Handle channels other than ``input``.
+    * Use Spring-boot project home directory rather than ``src/main/resources``
 """
 import functools
 import pika

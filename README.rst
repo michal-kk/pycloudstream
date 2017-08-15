@@ -6,12 +6,19 @@ Send a message to spring cloud stream channel.
 Example
 -------
 
-Executing ``pycloudstream-send`` with an argument sends a message to the
-predefined RabbitMQ exchange:
+Command line ``pycloudstream-send`` sends a message to the exchange configured
+by Spring Cloud Stream properties defined in the ``application.properties``
+file under the given path:
 
 ::
 
-  $ pycloudstream-send {"example-key":"example-value"}
+  $ pycloudstream-send <properties file path> <message payload>
+
+The module can also be used directly:
+
+  >>> import pycloudstream.rabbit
+  >>> configured_send = pycloudstream.rabbit.configure_exchange(path)
+  >>> configured_send(message_body)
 
 
 Installation
