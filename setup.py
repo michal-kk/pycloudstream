@@ -15,7 +15,8 @@ setup(name="pycloudstream",
       author_email="lekkoscbytu@gmail.com",
       license="MIT",
       packages=["pycloudstream"],
-      install_requires=["pika"],
+      install_requires=["pika",
+                        "javaproperties"],
       zip_safe=True,
       entry_points={
           "console_scripts": [

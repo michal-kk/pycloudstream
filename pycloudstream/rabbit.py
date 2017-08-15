@@ -1,10 +1,49 @@
-"""Send message to RabbitMQ."""
-from functools import partial
+"""Send a message to RabbitMQ.
+
+This module reads java properties file, configures a RabbitMQ exchange based on
+spring cloud stream properties in the file and sends a message to the
+configured exchange.
+
+Example:
+    ...
+
+Todo:
+    * Handle channels other than ``input``.
+"""
+import functools
 import pika
+import javaproperties
+import os
+
+
+def configure_exchange(properties_file_path):
+    """Read properties file, return send message function.
+
+    Args:
+        properties_file (str): Path of the ``application.properties`` file
+            containing spring cloud stream configuration.
+
+    Returns:
+        Partial that takes a message body as an argument and sends the given
+            message body to the exchange configured via the read parameters.
+    """
+    with open(os.path.join(properties_file_path, "application.properties"),
+              "rb") as f:
+        properties_dict = javaproperties.load(f)
+
+    properties_address, properties_port = properties_dict[
+        "spring.rabbitmq.addresses"].split(",")[0].split(":")
+    properties_exchange = properties_dict[
+        "spring.cloud.stream.bindings.input.destination"]
+
+    return functools.partial(send_message,
+                             rabbit_address=properties_address,
+                             rabbit_port=int(properties_port),
+                             to_exchange=properties_exchange)
 
 
 def send_message(message_body, rabbit_address, rabbit_port, to_exchange):
-    """Send message to the specified RabbitMQ exchange.
+    """Send a message to the specified RabbitMQ exchange.
 
     Args:
         message_body (str): The body (payload) of the message.
@@ -25,10 +64,3 @@ def send_message(message_body, rabbit_address, rabbit_port, to_exchange):
                                   content_type="application/json"))
     finally:
         connection.close()
-
-
-simple_send = partial(send_message,
-                      rabbit_address="192.168.99.100",
-                      rabbit_port=5672,
-                      to_exchange="my-message-queue")
-"""partial: Convinience function to send message to a predefined exchange."""

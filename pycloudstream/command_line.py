@@ -3,4 +3,5 @@ import sys
 
 
 def main():
-    pycloudstream.rabbit.simple_send(sys.argv[1])
+    simple_send = pycloudstream.rabbit.configure_exchange(sys.argv[1])
+    simple_send(sys.argv[2])
